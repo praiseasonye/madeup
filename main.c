@@ -73,6 +73,9 @@ int main(int argc, char **argv)
 			tokens = strtok(NULL, delim);
 		}
 		argv[i] = NULL;
+
+		/* Execute a command via the path to the executabele file*/
+		execute_cmd(argv);
 		
 	}
 
