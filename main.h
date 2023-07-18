@@ -12,5 +12,7 @@
 #include <signal.h>
 #include <limits.h>
 
+char *_strcpy(char *dest, char *src);
+int _strlen(char *s);
 #endif /*main.h*/
 
