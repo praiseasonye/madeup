@@ -14,5 +14,6 @@
 
 char *_strcpy(char *dest, char *src);
 int _strlen(char *s);
+void execmd(char **argv)
 #endif /*main.h*/
 
