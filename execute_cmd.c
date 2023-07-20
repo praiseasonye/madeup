@@ -17,10 +17,10 @@ void execute_cmd(char **argv)
 
 	if (argv)
 	{
-		cmd = argv[0];
+		cmd = get_cmddir(argv[0]);
 		
 		exec_return = execve(cmd, argv, NULL);
 		if (exec_return == -1)
-			write(STDERR_FILENO, "NOT FOUND: No such file or directory", 36);
+			write(STDERR_FILENO, "NOT FOUND: No such file or directory\n", 37);
 	}
 }

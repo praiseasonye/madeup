@@ -14,5 +14,8 @@
 
 int _strlen(char *s);
 char *_strcpy(char *dest, char *src);
+char *_strcat(char *dest, char *src);
+
 void execute_cmd(char **argv);
+char *get_cmddir(char *cmd);
 #endif /* main.h */
