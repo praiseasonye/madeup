@@ -14,12 +14,11 @@
 
 char *get_cmddir(char *cmd)
 {
-	char *dir, *dir_copy, *dir_token, *file_dir;
+	char *dir = NULL, *dir_copy = NULL, *dir_token = NULL, *file_dir = NULL;
 	int cmd_len, dir_len;
 	struct stat buffer;
 
 	dir = getenv("PATH");
-
 	if (dir)
 	{
 		/* Duplicate the dirctory path string do that tokenization by
@@ -39,7 +38,7 @@ char *get_cmddir(char *cmd)
 		{
 			/* get the length of the tokenized or broken down directory */
 			dir_len = _strlen(dir_token);
-			file_dir = malloc(cmd_len + dir_len + 2);
+			file_dir = malloc((cmd_len + dir_len + 3) * sizeof(char));
 			if (file_dir == NULL)
 			{
 				free(dir_copy);
@@ -65,8 +64,9 @@ char *get_cmddir(char *cmd)
 		}
 
 		free(dir_copy);
+		free(file_dir);
 
-		if (stat(cmd, & buffer) == 0)
+		if (stat(cmd, &buffer) == 0)
 		{
 			return (cmd);
 		}

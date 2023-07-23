@@ -15,12 +15,12 @@
 int main(int argc, char **argv)
 {
 	char *prompt = "($) ";
-	char *inputptr;
+	char *inputptr = NULL;
 	char *inputptr_copy = NULL;
 	const char *delim = " \n";
 	size_t n = 0;
 	int i;
-	char *tokens;
+	char *tokens = NULL;
 	int num_toks = 0;
 	ssize_t num_chars_read;
 	
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 		inputptr_copy = malloc(sizeof(char) * num_chars_read + 1);
 		if (inputptr_copy == NULL)
 		{
-			write(STDERR_FILENO, "Memory allocation error", 23);
+			perror("Memory allocation error");
 			free(inputptr);
 			return (-1);
 		}
@@ -76,11 +76,14 @@ int main(int argc, char **argv)
 
 		/* Execute a command via the path to the executabele file*/
 		execute_cmd(argv);
+		free(inputptr);
+		inputptr = NULL;
 		
 	}
 
 	free(inputptr);
 	free(inputptr_copy);
+	double_free(argv);
 
 	return (0);
 }

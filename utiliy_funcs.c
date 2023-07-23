@@ -42,7 +42,7 @@ int _strlen(char *s)
 	return (j);
 }
 
-#include "main.h"
+
 
 /**
  * _strcat - Concatenates the string pointed to by @src,
@@ -64,4 +64,38 @@ char *_strcat(char *dest, char *src)
 		dest[dest_len++] = src[index];
 
 	return (dest);
+}
+
+/**
+ * double_free - Free double pointer variables.
+ * @to_be_freed: The address of the elements that need to be freed.
+ */
+void double_free(char **to_be_freed)
+{
+	int index;
+
+	for (index = 0; to_be_freed[index] != NULL; index++)
+		free(to_be_freed[index]);
+	free(to_be_freed);
+}
+
+
+/**
+ * _strcmp - Compares pointers to two strings.
+ * @s1: A pointer to the first string to be compared.
+ * @s2: A pointer to the second string to be compared.
+ *
+ * Return: If str1 < str2, result = the negative difference
+ *         If str1 == str2, 0.
+ *         If str1 > str2, result = the positive difference
+ */
+
+int _strcmp(char *s1, char *s2)
+{
+	while (*s1 && *s2 && *s1 == *s2)
+	{
+		s1++;
+		s2++;
+	}
+	return (*s1 - *s2);
 }

@@ -12,17 +12,31 @@
 
 void execute_cmd(char **argv)
 {
-	char *cmd;
+	char *cmd = NULL;
 	int exec_return;
 	pid_t child_pid;
-	int status;
+	int status; size_t i;
+	builtin_command builtins[] = {
+		{"exit", shell_exit},
+		{NULL, NULL}
+	};
 
 	if (argv)
 	{
+		/* check if the command is a built-in command*/
+		for (i = 0; builtins[i].name != NULL; i++)
+		{
+			if (_strcmp(argv[0], builtins[i].name) == 0)
+			{
+				builtins[i].func(argv);
+				return;
+			}
+		}
+		/* then it's a system command */
 		child_pid = fork();
 		if (child_pid < 0)
 		{
-			write(STDERR_FILENO, "fork process failed", 19);
+			perror("fork process failed");
 			return;
 		}
 		else if (child_pid == 0)
@@ -30,13 +44,13 @@ void execute_cmd(char **argv)
 			cmd = get_cmddir(argv[0]);
 			if (cmd == NULL)
 			{
-				write(STDERR_FILENO, "Command not found\n", 18);
+				perror("Command not found");
 				exit(EXIT_FAILURE);
 			}
 			exec_return = execve(cmd, argv, NULL);
 			if (exec_return == -1)
 			{
-				write(STDERR_FILENO, "NOT FOUND: No such file or directory\n", 37);
+				perror("NOT FOUND: No such file or directory");
 				exit(EXIT_FAILURE);
 			}
 		}
