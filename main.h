@@ -11,8 +11,10 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <limits.h>
+#include <stddef.h>
 
 int _strlen(char *s);
 char *_strcpy(char *dest, char *src);
 void execute_cmd(char **argv);
+ssize_t _getline(char **lineptr, size_t *n);
 #endif /* main.h */
