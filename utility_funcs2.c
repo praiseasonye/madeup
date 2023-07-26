@@ -1,6 +1,25 @@
 #include "main.h"
 
 /**
+ * error_printing - Prints a message error when a comand is not found.
+ *
+ *
+ * @count: A counter keeping track of the number of commands run on the shell.
+ *
+ * @av: The name of the program running the shell.
+ *
+ * @command: The specific command not being found.
+ */
+void error_printing(char *av, int count, char *command)
+{
+	print_str(av, 1);
+	print_str(": ", 1);
+	print_number(count);
+	print_str(": ", 1);
+	print_str(command, 1);
+}
+
+/**
  * _strdup - a function that allocates memory and
  *           copys a string to the allocated memory
  * @str: the string to be copied
@@ -81,4 +100,26 @@ void _memcpy(void *newptr, const void *ptr, unsigned int size)
 		char_newptr[i] = char_ptr[i];
 }
 
+/**
+ * single_free - Will free a n amount of pointers to a string.
+ *
+ * @n: The number of pointers to free.
+ *
+ */
+void single_free(int n, ...)
+{
+	int i;
+	char *str;
+	va_list a_list;
+
+	va_start(a_list, n);
+	for (i = 0; i < n; i++)
+	{
+		str = va_arg(a_list, char*);
+		if (str == NULL)
+			str = "(nil)";
+		free(str);
+	}
+	va_end(a_list);
+}
 
