@@ -12,12 +12,15 @@
 #include <signal.h>
 #include <limits.h>
 
+#define BUFFER_SIZE 1024
+void handle_non_interactive_mode(int input_fd);
 int _strlen(char *s);
 char *_strcpy(char *dest, char *src);
 char *_strcat(char *dest, char *src);
 int _strcmp(char *s1, char *s2);
 char *_strdup(char *str);
 
+int count_commands(const char *input, const char *delim);
 void execute_cmd(char **argv);
 char *get_cmddir(char *cmd);
 char **tokenize(char *input, const char *delim, int *num_tokens);

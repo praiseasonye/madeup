@@ -55,3 +55,7 @@ shell
 test
 hsh
 simple_shell
+
+TEST_SUITES
+allowed_functions
+runchecker.bash
