@@ -12,13 +12,14 @@
 #include <signal.h>
 #include <limits.h>
 
-#define BUFFER_SIZE 1024
-void handle_non_interactive_mode(int input_fd);
+#define BUFFSIZE 1024
+void handle_non_interactive_mode();
 int _strlen(char *s);
 char *_strcpy(char *dest, char *src);
 char *_strcat(char *dest, char *src);
 int _strcmp(char *s1, char *s2);
 char *_strdup(char *str);
+void _memcpy(void *newptr, const void *ptr, unsigned int size);
 
 int count_commands(const char *input, const char *delim);
 void execute_cmd(char **argv);
@@ -26,6 +27,9 @@ char *get_cmddir(char *cmd);
 char **tokenize(char *input, const char *delim, int *num_tokens);
 void (*builtin_selector(char *str))(char **str);
 void double_free(char **to_be_freed);
+void bring_line(char **lineptr, size_t *n, char *buffer, size_t j);
+ssize_t get_line(char **lineptr, size_t *n, FILE *stream);
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 
 /* define a structure to handle built-in commands */
 /**

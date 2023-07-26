@@ -1,5 +1,4 @@
 #include "main.h"
-#include <stdio.h>
 
 /**
  * main - entry point of the shell program
@@ -28,7 +27,7 @@ int main(int argc, char **argv)
 			write(STDOUT_FILENO, prompt, 2);
 			/*getline function to get the shell commandline*/
 			/* arguments inputed by the user*/
-			num_chars_read = getline(&inputptr, &n, stdin);
+			num_chars_read = get_line(&inputptr, &n, stdin);
 			if (num_chars_read == -1)
 			{
 				perror("Error reading input");
@@ -46,7 +45,7 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		handle_non_interactive_mode(STDIN_FILENO);
+		handle_non_interactive_mode();
 	}
 	return (0);
 }
