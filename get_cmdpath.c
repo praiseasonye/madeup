@@ -15,13 +15,12 @@ char *get_cmddir(char *cmd)
 	char *dir = NULL, *dir_copy = NULL, *dir_token = NULL, *file_dir = NULL;
 	int cmd_len, dir_len;
 	struct stat buffer;
-	
+
 	if (access(cmd, X_OK) == 0)
-		return cmd;
+		return (cmd);
 	dir = getenv("PATH");
 	if (dir)
 	{
-	
 		dir_copy = _strdup(dir);
 		if (dir_copy == NULL)
 			return (NULL);

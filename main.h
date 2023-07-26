@@ -13,7 +13,7 @@
 #include <limits.h>
 
 #define BUFFSIZE 1024
-void handle_non_interactive_mode();
+void handle_non_interactive_mode(int input_fd);
 int _strlen(char *s);
 char *_strcpy(char *dest, char *src);
 char *_strcat(char *dest, char *src);
@@ -30,6 +30,7 @@ void double_free(char **to_be_freed);
 void bring_line(char **lineptr, size_t *n, char *buffer, size_t j);
 ssize_t get_line(char **lineptr, size_t *n, FILE *stream);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+int write_command_to_file(const char* filename);
 
 /* define a structure to handle built-in commands */
 /**
