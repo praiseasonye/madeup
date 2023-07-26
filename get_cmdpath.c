@@ -39,10 +39,8 @@ char *get_cmddir(char *cmd)
 			_strcat(file_dir, "\0");
 			if (stat(file_dir, &buffer) == 0)
 			{
-				free(dir_copy);
 				return (file_dir);
 			}
-			free(file_dir);
 			dir_token = strtok(NULL, ":");
 		}
 		free(dir_copy);
