@@ -13,7 +13,7 @@
 
 int main(int argc, char **argv)
 {
-	char *prompt = "($) ", *inputptr = NULL;
+	char *prompt = "$ ", *inputptr = NULL;
 	const char *delim = " \n";
 	size_t n = 0;
 	int num_toks;
@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 	while (1)
 	{
 		/* The prompt that would be displayed whenever the shell is launched */
-		write(STDOUT_FILENO, prompt, 4);
+		write(STDOUT_FILENO, prompt, 2);
 		/*getline function to get the shell commandline*/
 		/* arguments inputed by the user*/
 		num_chars_read = getline(&inputptr, &n, stdin);

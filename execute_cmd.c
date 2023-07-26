@@ -15,22 +15,17 @@ void execute_cmd(char **argv)
 	char *cmd = NULL;
 	int exec_return;
 	pid_t child_pid;
-	int status; size_t i;
-	builtin_command builtins[] = {
-		{"exit", shell_exit},
-		{NULL, NULL}
-	};
+	int status;
+	void (*func)(char **);
 
 	if (argv)
 	{
 		/* check if the command is a built-in command*/
-		for (i = 0; builtins[i].name != NULL; i++)
+		func = builtin_selector(argv[0]);
+		if (func != NULL)
 		{
-			if (_strcmp(argv[0], builtins[i].name) == 0)
-			{
-				builtins[i].func(argv);
-				return;
-			}
+			func(argv);
+			return;
 		}
 		/* then it's a system command */
 		child_pid = fork();
@@ -54,9 +49,7 @@ void execute_cmd(char **argv)
 				exit(EXIT_FAILURE);
 			}
 		}
-
 		else
 			waitpid(child_pid, &status, 0);
 	}
-
 }
