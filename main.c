@@ -23,7 +23,10 @@ int main(int argc, char **argv)
 	while (1)
 	{
 		/* The prompt that would be displayed whenever the shell is launched */
-		write(STDOUT_FILENO, prompt, 2);
+		if (isatty(STDIN_FILENO))
+		{
+			write(STDOUT_FILENO, prompt, 2);
+		}
 		/*getline function to get the shell commandline*/
 		/* arguments inputed by the user*/
 		num_chars_read = getline(&inputptr, &n, stdin);
@@ -35,8 +38,7 @@ int main(int argc, char **argv)
 		argv = tokenize(inputptr, delim, &num_toks);
 		if (argv == NULL)
 		{
-			perror("Tokenization failed");
-			break;
+			continue;
 		}
 		execute_cmd(argv);
 		/*free(inputptr);*/
