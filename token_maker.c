@@ -2,53 +2,173 @@
 #include <string.h>
 
 /**
- * tokenize - a function that breaks the command line arguments
- *            into an array of strings.
+ * token_interface - Meant to interact with other token functions, and make
+ * them more accessible to other parts of the program.
  *
- * @input: the input of the user to the command line.
- * @delim: what would be used to separate the string.
- * @num_tokens: the number of tokens or separate strings
- *              gotten from the input.
  *
- * Return: An array of strings.
+ * @line: A string containing the raw user input.
+ *
+ * @delim: A constant string containing the desired delimeter to tokenize line.
+ *
+ *
+ * @token_count: A holder for the amount of tokens in a string.
+ *
+ * Return: Upon success an array of tokens representing the command. Otherwise
+ * returns NULL.
+ *
  *
  */
-
-char **tokenize(char *input, const char *delim, int *num_tokens)
+char **token_interface(char *line, const char *delim, int token_count)
 {
-	char *token, *input_copy;
-	char **tokens = NULL;
-	int count = 0, i;
+	char **param_array;
 
-	input_copy = _strdup(input);
-	if (input_copy == NULL)
+	token_count = count_token(line, delim);
+	if (token_count == -1)
 	{
-		perror("Memory allocation error");
+		free(line);
 		return (NULL);
 	}
-	token = strtok(input, delim);
-	while (token != NULL)
+	param_array = tokenize(token_count, line, delim);
+	if (param_array == NULL)
 	{
-		count++;
+		free(line);
+		return (NULL);
+	}
+
+	return (param_array);
+}
+
+
+/**
+ * parse_line - Parses the command line looking for commands and argumements.
+ * This function it is also in charged of freeing memory that is not longer
+ * needed by the program.
+ *
+ * @line: A pointer to a string. Will always be NULL upon function entry.
+ *
+ * @size: A holder for numbers of size_t. Will always be initilized to 0.
+ *
+ * @command_counter: A counter keeping track of how many commands have been
+ * entered into the shell.
+ *
+ *
+ * @av: Name of the program running the shell
+ */
+
+void parse_line(char *line, size_t size, int command_counter, char **av)
+{
+	int i;
+	ssize_t read_len;
+	int token_count;
+	char **param_array;
+	const char *delim = "\n\t ";
+
+	token_count = 0;
+	write(STDOUT_FILENO, PROMPT, str_len(PROMPT));
+	read_len = getline(&line, &size, stdin);
+	if (read_len != -1)
+	{
+		param_array = token_interface(line, delim, token_count);
+		if (param_array[0] == NULL)
+		{
+			single_free(2, param_array, line);
+			return;
+		}
+		i = built_in(param_array, line);
+		if (i == -1)
+			create_child(param_array, line, command_counter, av);
+		for (i = 0; param_array[i] != NULL; i++)
+			free(param_array[i]);
+		single_free(2, param_array, line);
+	}
+	else
+		exit_b(line);
+}
+
+/**
+ * tokenize - Separates a string into an array of tokens. DON'T FORGET TO FREE
+ * on receiving function when using tokenize.
+ *
+ *
+ * @token_count: An integer representing the amount of tokens in the array.
+ *
+ *
+ * @line: String that is separated by an specified delimeter
+ *
+ * @delim: The desired delimeter to separate tokens.
+ *
+ * Return: Upon success a NULL terminated array of pointer to strings.
+ * Otherwise returns NULL.
+ *
+ *
+ */
+char **tokenize(int token_count, char *line, const char *delim)
+{
+	int i;
+	char **buffer;
+	char *token;
+	char *line_cp;
+
+	line_cp = _strdup(line);
+	buffer = malloc(sizeof(char *) * (token_count + 1));
+	if (buffer == NULL)
+		return (NULL);
+	token = strtok(line_cp, delim);
+	for (i = 0; token != NULL; i++)
+	{
+		buffer[i] = _strdup(token);
 		token = strtok(NULL, delim);
 	}
+	buffer[i] = NULL;
+	free(line_cp);
+	return (buffer);
+}
 
-	if (count > 0)
-	{
-		tokens = malloc(sizeof(char *) * (count + 1));
-		if (tokens != NULL)
-		{
-			token = strtok(input_copy, delim);
-			for (i = 0; i < count; i++)
-			{
-				tokens[i] = _strdup(token);
-				token = strtok(NULL, delim);
-			}
-			tokens[count] = NULL;
-		}
-	}
 
-	free(input_copy);
-	*num_tokens = count;
-	return (tokens);
+/**
+ * create_child - Creates a child in order to execute another program.
+ *
+ *
+ * @param_array: An array of pointers to strings containing the possible name
+ *
+ * of a program and its parameters. This array is NULL terminated.
+ *
+ * @line: The contents of the read line.
+ *
+ * @count: A counter keeping track of how many commands have been entered
+ * into the shell.
+ *
+ * @av: Name of the program running the shell
+ */
+
+
+
+/**
+ * count_token - Counts tokens in the passed string.
+ *
+ *
+ * @line: String that is separated by an specified delimeter
+ *
+ *
+ * @delim: The desired delimeter to separate tokens.
+ *
+ *
+ * Return: Upon success the total count of the tokens. Otherwise -1.
+ *
+ *
+ */
+int count_token(char *line, const char *delim)
+{
+	char *str;
+	char *token;
+	int i;
+
+	str = _strdup(line);
+	if (str == NULL)
+		return (-1);
+	token = strtok(str, delim);
+	for (i = 0; token != NULL; i++)
+		token = strtok(NULL, delim);
+	free(str);
+	return (i);
 }
