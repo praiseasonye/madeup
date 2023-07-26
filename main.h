@@ -22,7 +22,7 @@
  */
 typedef struct builtin_cmd
 {
-	char *built;
+	char *name;
 	void (*f)(char *);
 } builtin_t;
 

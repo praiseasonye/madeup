@@ -14,9 +14,10 @@ void (*builtin_selector(char *str))(char **str)
 {
 	int i;
 
-	builtin_command builtins[] = {
+	builtin_t builtins[] = {
 		{"exit", shell_exit},
 		{"env", shell_env},
+		{"cd", cd_b},
 		{NULL, NULL}
 	};
 
@@ -25,7 +26,7 @@ void (*builtin_selector(char *str))(char **str)
 		{
 			if (_strcmp(str, builtins[i].name) == 0)
 			{
-				return (builtins[i].func);
+				return (builtins[i].f);
 			}
 		}
 		return (NULL);
