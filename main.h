@@ -1,54 +1,60 @@
-#ifndef _MAIN_H_
-#define _MAIN_H_
+#ifndef _OLAF_
+#define _OLAF_
 
+#include <string.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/types.h>
+#include <dirent.h>
 #include <sys/stat.h>
-#include <errno.h>
-#include <fcntl.h>
+#include <stdarg.h>
 #include <signal.h>
-#include <limits.h>
+#define PROMPT "Olaf $ "
 
-#define BUFFSIZE 1024
-void handle_non_interactive_mode(int input_fd);
-int _strlen(char *s);
-char *_strcpy(char *dest, char *src);
-char *_strcat(char *dest, char *src);
-int _strcmp(char *s1, char *s2);
-char *_strdup(char *str);
-void _memcpy(void *newptr, const void *ptr, unsigned int size);
 
-int count_commands(const char *input, const char *delim);
-void execute_cmd(char **argv);
-char *get_cmddir(char *cmd);
-char **tokenize(char *input, const char *delim, int *num_tokens);
-void (*builtin_selector(char *str))(char **str);
-void double_free(char **to_be_freed);
-void bring_line(char **lineptr, size_t *n, char *buffer, size_t j);
-ssize_t get_line(char **lineptr, size_t *n, FILE *stream);
-void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
-int write_command_to_file(const char* filename);
-
-/* define a structure to handle built-in commands */
 /**
- * struct builtin_t - a structure that for calling
- *                    a builtin commmand.
- * @name: the name of the builtin command
- * @func: the function to be called.
- *
+ * struct builtin_d - Defines the builtins functions.
+ * @built: The name of the build in command.
+ * @f: A pointer to the right builtin function.
  */
-
-typedef struct builtin_t
+typedef struct builtin_cmd
 {
-	char *name;
-	void (*func)(char **argv);
-} builtin_command;
+	char *built;
+	void (*f)(char *);
+} builtin_t;
 
-/* built-in functions */
-void shell_exit(char **argv);
-void shell_env(char **argv);
 extern char **environ;
-#endif /* main.h */
+
+int built_in(char **, char *);
+void (*check_built_ins(char *))(char *);
+void exit_b(char *);
+void env_b(char *);
+void cd_b(char *);
+char **token_interface(char *, const char *, int);
+int count_token(char *, const char *);
+char **tokenize(int, char *, const char *);
+void create_child(char **, char *, int, char **);
+void parse_line(char *, size_t, int, char **);
+char *path_finder(char *);
+int str_len(char *);
+int find_path(char *);
+char **tokenize_path(int, char *);
+char *search_directories(char **, char *);
+char *build_path(char *, char *);
+void double_free(char **);
+void single_free(int, ...);
+
+int _strcmp(char *, char *);
+char *_strdup(char *);
+void print_str(char *, int);
+int print_digit(int);
+int _write_char(char);
+
+/* auxiliary functions*/
+void error_printing(char *, int, char *);
+void exec_error(char *, int, char *);
+
+#endif
