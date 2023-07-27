@@ -14,7 +14,7 @@ void error_printing(char *av, int count, char *command)
 {
 	print_str(av, 1);
 	print_str(": ", 1);
-	print_number(count);
+	print_digit(count);
 	print_str(": ", 1);
 	print_str(command, 1);
 }
@@ -22,7 +22,9 @@ void error_printing(char *av, int count, char *command)
 /**
  * _strdup - a function that allocates memory and
  *           copys a string to the allocated memory
+ *
  * @str: the string to be copied
+ *
  *
  * Return: the newly copied string.
  *
@@ -35,7 +37,7 @@ char *_strdup(char *str)
 
 	if (new_str != NULL)
 	{
-		_strcpy(new_str, str);
+		strcpy(new_str, str);
 		new_str[len] = '\0';
 	}
 
@@ -45,8 +47,12 @@ char *_strdup(char *str)
 
 /**
  * _realloc - reallocates a memory block.
+ *
  * @ptr: pointer to the memory previously allocated.
+ *
+ *
  * @old_size: size, in bytes, of the allocated space of ptr.
+ *
  * @new_size: new size, in bytes, of the new memory block.
  *
  * Return: ptr.
@@ -84,8 +90,11 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 
 /**
  * _memcpy - copies information between void pointers.
+ *
  * @newptr: destination pointer.
+ *
  * @ptr: source pointer.
+ *
  * @size: size of the new pointer.
  *
  * Return: no return.

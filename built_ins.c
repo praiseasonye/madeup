@@ -94,7 +94,7 @@ int built_in(char **command, char *line)
 {
 	void (*build)(char *);
 
-	build = check_built_ins(command[0]);
+	build = builtin_selector(command[0]);
 	if (build == NULL)
 		return (-1);
 	if (_strcmp("exit", command[0]) == 0)

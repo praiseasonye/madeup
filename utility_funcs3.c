@@ -1,3 +1,5 @@
+#include "main.h"
+
 /**
  * exec_error - Prints exec errors.
  *
@@ -48,4 +50,24 @@ void print_str(char *str, int new_line)
 int _write_char(char c)
 {
 	return (write(1, &c, 1));
+}
+
+/**
+ * str_len - Calculates the lenght of a string.
+ *
+ *
+ * @str: String that needs length to be found.
+ *
+ *
+ * Return: Upon success returns the length of a string. otherwise 0.
+ */
+int str_len(char *str)
+{
+	int i;
+
+	if (str == NULL)
+		return (0);
+	for (i = 0; str[i] != '\0'; i++)
+		;
+	return (i);
 }

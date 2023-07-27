@@ -10,13 +10,13 @@
  *
  */
 
-void (*builtin_selector(char *str))(char **str)
+void (*builtin_selector(char *str))(char *str)
 {
 	int i;
 
 	builtin_t builtins[] = {
-		{"exit", shell_exit},
-		{"env", shell_env},
+		{"exit", exit_b},
+		{"env", env_b},
 		{"cd", cd_b},
 		{NULL, NULL}
 	};

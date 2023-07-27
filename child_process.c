@@ -1,4 +1,4 @@
-#include "main.c"
+#include "main.h"
 
 /**
  * create_child - Creates a child in order to execute another program.
