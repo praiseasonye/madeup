@@ -1,5 +1,5 @@
-#ifndef _OLAF_
-#define _OLAF_
+#ifndef MAIN_H
+#define MAIN_H
 
 #include <string.h>
 #include <stdio.h>
@@ -18,8 +18,8 @@
 
 
 /**
- * struct builtin_d - Defines the builtins functions.
- * @built: The name of the build in command.
+ * struct builtin_cmd - Defines the builtins functions.
+ * @name: The name of the build in command.
  * @f: A pointer to the right builtin function.
  */
 typedef struct builtin_cmd

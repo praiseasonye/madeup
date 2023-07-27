@@ -62,9 +62,14 @@ void parse_line(char *line, size_t size, int command_counter, char **av)
 	int token_count;
 	char **param_array;
 	const char *delim = "\n\t ";
+	int interactive_mode;
 
 	token_count = 0;
-	write(STDOUT_FILENO, PROMPT, str_len(PROMPT));
+	interactive_mode = isatty(STDIN_FILENO);
+	if (interactive_mode)
+	{
+		write(STDOUT_FILENO, PROMPT, str_len(PROMPT));
+	}
 	read_len = getline(&line, &size, stdin);
 	if (read_len != -1)
 	{
@@ -123,23 +128,6 @@ char **tokenize(int token_count, char *line, const char *delim)
 	free(line_cp);
 	return (buffer);
 }
-
-
-/**
- * create_child - Creates a child in order to execute another program.
- *
- *
- * @param_array: An array of pointers to strings containing the possible name
- *
- * of a program and its parameters. This array is NULL terminated.
- *
- * @line: The contents of the read line.
- *
- * @count: A counter keeping track of how many commands have been entered
- * into the shell.
- *
- * @av: Name of the program running the shell
- */
 
 
 

@@ -64,7 +64,6 @@ void cd_b(char *line)
 
 
 /**
- *
  * exit_b - Exits the shell. After freeing allocated resources.
  *
  *
@@ -80,7 +79,6 @@ void exit_b(char *line)
 }
 
 /**
- *
  * built_in - Checks for builtin functions.
  *
  * @command: An array of all the arguments passed to the shell.
