@@ -64,19 +64,41 @@ void cd_b(char *line)
 
 
 /**
- * exit_b - Exits the shell. After freeing allocated resources.
- *
- *
- * @line: A string representing the input from the user.
- *
+ * exit_b - Exits the shell with the specified exit code.
+ * @line: The command line containing the exit code as "exit <code>",
+ *        or simply "exit" without any code.
  */
-
 void exit_b(char *line)
 {
-	free(line);
-	print_str("\n", 1);
-	exit(1);
+	int exit_code = 0;
+
+	while (*line == ' ' || *line == '\t')
+		line++;
+	if (strncmp(line, "exit", 4) == 0)
+	{
+		line += 4;
+		while (*line == ' ' || *line == '\t')
+			line++;
+		if (*line == '\0')
+		{
+			free(line);
+			exit(0);
+		}
+		else
+		{
+			exit_code = atoi(line);
+			free(line);
+			exit(exit_code);
+		}
+	}
+	else
+	{
+		free(line);
+		exit(0);
+	}
+	
 }
+
 
 /**
  * built_in - Checks for builtin functions.

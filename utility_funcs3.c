@@ -16,7 +16,7 @@ void exec_error(char *av, int count, char *tmp_command)
 	error_printing(av, count, tmp_command);
 	print_str(": ", 1);
 	perror("");
-	exit(1);
+	exit(127);
 }
 
 /**
