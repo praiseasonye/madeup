@@ -14,7 +14,8 @@
 void exec_error(char *av, int count, char *tmp_command)
 {
 	error_printing(av, count, tmp_command);
-	perror(": ");
+	print_str(": ", 1);
+	perror("");
 	exit(127);
 }
 
@@ -29,7 +30,7 @@ void exec_error(char *av, int count, char *tmp_command)
  *
  *
  */
-void print_str(char *str)
+void print_str(char *str, int new_line)
 {
 	int i;
 
@@ -37,6 +38,8 @@ void print_str(char *str)
 		str = "(null)";
 	for (i = 0; str[i] != '\0'; i++)
 		write(STDOUT_FILENO, &str[i], 1);
+	if (new_line == 0)
+		write(STDOUT_FILENO, "\n", 1);
 }
 
 /**

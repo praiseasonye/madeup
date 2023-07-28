@@ -55,7 +55,7 @@ void cd_b(char *line)
 		chdir((environ[index]) + 5);
 	}
 	else if (_strcmp(param_array[1], "-") == 0)
-		print_str(param_array[1]);
+		print_str(param_array[1], 0);
 
 	else
 		chdir(param_array[1]);
@@ -80,19 +80,23 @@ void exit_b(char *line)
 		while (*line == ' ' || *line == '\t')
 			line++;
 		if (*line == '\0')
+		{
+			free(line);
 			exit(0);
+		}
 		else
 		{
 			exit_code = atoi(line);
+			free(line);
 			exit(exit_code);
 		}
 	}
 	else
 	{
+		free(line);
 		exit(0);
 	}
 	
-	free(line);
 }
 
 

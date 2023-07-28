@@ -25,17 +25,10 @@ void create_child(char **param_array, char *line, int count, char **av)
 	struct stat buf;
 	char *tmp_command;
 	char *command;
-	int dev_null;
 
 	id = fork();
 	if (id == 0)
 	{
-		dev_null = open("/dev/null", O_WRONLY);
-			if (dev_null < 0)
-			{
-				perror("Failed to open /dev/null");
-				exit(EXIT_FAILURE);
-			}
 		tmp_command = param_array[0];
 		command = path_finder(param_array[0]);
 		if (command == NULL)
@@ -44,7 +37,7 @@ void create_child(char **param_array, char *line, int count, char **av)
 			if (check == -1)
 			{
 				error_printing(av[0], count, tmp_command);
-				print_str(": not found");
+				print_str(": not found", 0);
 				single_free(2, line, tmp_command);
 				for (i = 1; param_array[i]; i++)
 					free(param_array[i]);

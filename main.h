@@ -53,7 +53,7 @@ void single_free(int, ...);
 
 int _strcmp(char *, char *);
 char *_strdup(char *);
-void print_str(char *);
+void print_str(char *, int);
 int print_digit(int);
 int _write_char(char);
 void _memcpy(void *newptr, const void *ptr, unsigned int size);
