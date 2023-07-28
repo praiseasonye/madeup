@@ -1,65 +1,264 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <fcntl.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/types.h>
-#include <dirent.h>
 #include <sys/stat.h>
-#include <stdarg.h>
-#include <signal.h>
-#include <stdlib.h>
-#include <stddef.h>
-#define PROMPT "$ "
+#include <limits.h>
+#include <fcntl.h>
+#include <errno.h>
 
+/* for read/write buffers */
+#define BUFF_SIZE 1024
+#define BUFF_SIZE 1024
+#define BUF_FLUSH -1
 
-/**
- * struct builtin_cmd - Defines the builtins functions.
- * @name: The name of the build in command.
- * @f: A pointer to the right builtin function.
- */
-typedef struct builtin_cmd
-{
-	char *name;
-	void (*f)(char *);
-} builtin_t;
+/* for command chaining */
+#define CMDNORM 0
+#define CMDOR 1
+#define CMDAND 2
+#define CMDCHAIN 3
+
+/* for convert_number() */
+#define CONVERTLOWERCASE 1
+#define CONVERTUNSIGNED 2
+
+/* 1 if using system getline() */
+#define USEGETLINE 0
+#define USESTRTOK 0
+
+#define HISTFILE ".shell_history"
+#define HISTMAX 4096
 
 extern char **environ;
 
-int built_in(char **, char *);
-void (*builtin_selector(char *str))(char *str);
-void exit_b(char *);
-void env_b(char *);
-void cd_b(char *);
-char **token_interface(char *, const char *, int);
-int count_token(char *, const char *);
-char **tokenize(int, char *, const char *);
-void create_child(char **, char *, int, char **);
-void parse_line(char *, size_t, int, char **);
-char *path_finder(char *);
-int _strlen(char *);
-int str_len(char *str);
-int find_path(char *);
-char **tokenize_path(int, char *);
-char *search_directories(char **, char *);
-char *build_path(char *, char *);
-void double_free(char **);
-void single_free(int, ...);
+/**
+ * struct liststring - singly linked list
+ *
+ * @num: the number field
+ *
+ * @str: a string
+ *
+ * @next: points to the next node
+ *
+ */
 
-int _strcmp(char *, char *);
-char *_strdup(char *);
-void print_str(char *, int);
-int print_digit(int);
-int _write_char(char);
-void _memcpy(void *newptr, const void *ptr, unsigned int size);
+typedef struct liststring
+{
+	int num;
+	char *str;
+	struct liststring *next;
+} list_t;
 
-/* auxiliary functions*/
-void error_printing(char *, int, char *);
-void exec_error(char *, int, char *);
+/**
+ * struct Shell  - Structure to store information passed into functions,
+ *
+ * allowing uniform prototype for function pointer struct
+ *
+ * @arg: a string generated from getline containing arguments
+ *
+ * @argv: an array of strings generated from arg
+ *
+ * @path: a string path for the current command
+ *
+ * @argc: the argument count
+ *
+ * @line_count: the error count
+ *
+ * @err_num: the error code for exit()
+ *
+ * @linecount_flag: if on count this line of input
+ *
+ * @fname: the program filename
+ *
+ * @env: linked list local copy of environ
+ *
+ * @environ: custom modified copy of environ from LL env
+ *
+ * @history: the history node
+ *
+ * @alias: the alias node
+ *
+ * @env_changed: on if environ was changed
+ *
+ * @status: the return status of the last exec'd command
+ *
+ * @cmd_buf: address of pointer to cmd_buf, on if chaining
+ *
+ * @cmd_buf_type: CMD_type ||, &&, ;
+ *
+ * @readfd: the fd from which to read line input
+ *
+ * @histcount: the history line number count
+ *
+ */
+
+typedef struct Shell_mad
+{
+	char *arg;
+	char **argv;
+	char *path;
+	int argc;
+	unsigned int line_count;
+	int err_num;
+	int linecount_flag;
+	char *fname;
+	list_t *env;
+	list_t *history;
+	list_t *alias;
+	char **environ;
+	int env_changed;
+	int status;
+
+	char **cmd_buf;
+	int cmd_buf_type;
+	int readfd;
+	int histcount;
+} Shell;
+
+#define INFOINIT                                                         \
+	{                                                                     \
+		NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, \
+			NULL, 0, 0, 0                                                 \
+	}
+
+/**
+ * struct builtin - contains a builtin string and related function
+ *
+ * @type: the builtin command flag
+ *
+ * @func: the function
+ */
+
+typedef struct builtin
+{
+	char *type;
+	int (*func)(Shell *);
+} builtin_table;
+
+/* shloop.c */
+int hsh(Shell *, char **);
+int findbuiltin(Shell *);
+void findcmd(Shell *);
+void forkcmd(Shell *);
+
+/* parser.c */
+int iscmd(Shell *, char *);
+char *dupchars(char *, int, int);
+char *findpath(Shell *, char *, char *);
+
+/* loophsh.c */
+int loophsh(char **);
+
+/* errors.c */
+void eputs(char *);
+int eputchar(char);
+int putfd(char c, int fd);
+int putsfd(char *str, int fd);
+
+/* string.c */
+int strlen_(char *);
+int strcmp_(char *, char *);
+char *startswith(const char *, const char *);
+char *strcat_(char *, char *);
+
+/* string1.c */
+char *strcpy_(char *, char *);
+char *strdup_(const char *);
+void puts_(char *);
+int putchar_(char);
+
+/* exits.c */
+char *strncpy_(char *, char *, int);
+char *strncat_(char *, char *, int);
+char *strchr_(char *, char);
+
+/* tokenizer.c */
+char **strtow(char *, char *);
+char **strtow2(char *, char);
+
+/*realloc.c */
+char *memset_(char *, char, unsigned int);
+void ffree(char **);
+void *realloc_(void *, unsigned int, unsigned int);
+
+/*memory.c */
+int bfree(void **);
+
+/* atoi.c */
+int interactive(Shell *);
+int isdelim(char, char *);
+int isalpha_(int);
+int atoi_(char *);
+
+/* errors1.c */
+int erratoi_(char *);
+void printerror(Shell *, char *);
+int printd(int, int);
+char *convertnumber(long int, int, int);
+void removecomments(char *);
+
+/* builtin.c */
+int myexit(Shell *);
+int mycd(Shell *);
+int myhelp(Shell *);
+
+/* builtin1.c */
+int myhistory(Shell *);
+int myalias(Shell *);
+
+/* getline.c */
+ssize_t get_input(Shell *);
+int _getline(Shell *, char **, size_t *);
+void sigintHandler(int);
+
+/*getinfo.c */
+void clearinfo(Shell *);
+void setinfo(Shell *, char **);
+void freeinfo(Shell *, int);
+
+/* environ.c */
+char *getenv_(Shell *, const char *);
+int myenv_(Shell *);
+int mysetenv_(Shell *);
+int myunsetenv_(Shell *);
+int populateenvlist(Shell *);
+
+/* getenv.c */
+char **get_environ(Shell *);
+int unsetenv_(Shell *, char *);
+int setenv_(Shell *, char *, char *);
+
+/* history.c */
+char *gethistoryfile(Shell *info);
+int writehistory(Shell *info);
+int readhistory(Shell *info);
+int buildhistorylist(Shell *info, char *buf, int linecount);
+int renumberhistory(Shell *info);
+
+/* lists.c */
+list_t *addnode(list_t **, const char *, int);
+list_t *addnodeend(list_t **, const char *, int);
+size_t printliststr(const list_t *);
+int deletenodeatindex(list_t **, unsigned int);
+void freelist(list_t **);
+
+/* lists1.c */
+size_t listlen(const list_t *);
+char **listtostrings(list_t *);
+size_t printlist(const list_t *);
+list_t *nodestartswith(list_t *, char *, char);
+ssize_t getnodeindex(list_t *, list_t *);
+
+/* vars.c */
+int ischain(ShellInfo *, char *, size_t *);
+void checkchain(Shell *, char *, size_t *, size_t, size_t);
+int replacealias(Shell *);
+int replacevars(Shell *);
+int replacestring(char **, char *);
 
 #endif
