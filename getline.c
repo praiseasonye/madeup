@@ -1,4 +1,4 @@
-i#include <stdlib.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include "main.h"
 /**
@@ -10,7 +10,7 @@ i#include <stdlib.h>
 
 ssize_t _getline(char **lineptr, size_t *n)
 {
-	size_t position = 0;/*in the buffer*/
+	size_t position = 0, i; /*in the buffer*/
 	char store;/*stores the character to be read*/
 
 	if (*lineptr == NULL)/*allocate memory*/
@@ -42,7 +42,8 @@ ssize_t _getline(char **lineptr, size_t *n)
 				*lineptr = NULL;
 				return (-1);
 			}
-			for (size_t i = 0; i < position; i++)
+
+			for (i = 0; i < position; i++)
 			{
 				new_lineptr[i] = (*lineptr)[i];
 			}

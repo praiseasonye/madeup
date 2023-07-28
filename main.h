@@ -61,4 +61,7 @@ void _memcpy(void *newptr, const void *ptr, unsigned int size);
 void error_printing(char *, int, char *);
 void exec_error(char *, int, char *);
 
+/*getline*/
+ssize_t _getline(char **lineptr, size_t *n);
+
 #endif
