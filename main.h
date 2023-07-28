@@ -1,6 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include <fcntl.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,7 +53,7 @@ void single_free(int, ...);
 
 int _strcmp(char *, char *);
 char *_strdup(char *);
-void print_str(char *, int);
+void print_str(char *);
 int print_digit(int);
 int _write_char(char);
 void _memcpy(void *newptr, const void *ptr, unsigned int size);

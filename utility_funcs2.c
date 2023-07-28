@@ -12,11 +12,11 @@
  */
 void error_printing(char *av, int count, char *command)
 {
-	print_str(av, 1);
-	print_str(": ", 1);
+	perror(av);
+	perror(": ");
 	print_digit(count);
-	print_str(": ", 1);
-	print_str(command, 1);
+	perror(": ");
+	perror(command);
 }
 
 /**

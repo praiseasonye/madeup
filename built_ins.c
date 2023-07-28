@@ -55,7 +55,7 @@ void cd_b(char *line)
 		chdir((environ[index]) + 5);
 	}
 	else if (_strcmp(param_array[1], "-") == 0)
-		print_str(param_array[1], 0);
+		print_str(param_array[1]);
 
 	else
 		chdir(param_array[1]);
@@ -64,19 +64,37 @@ void cd_b(char *line)
 
 
 /**
- * exit_b - Exits the shell. After freeing allocated resources.
- *
- *
- * @line: A string representing the input from the user.
- *
+ * exit_b - Exits the shell with the specified exit code.
+ * @line: The command line containing the exit code as "exit <code>",
+ *        or simply "exit" without any code.
  */
-
 void exit_b(char *line)
 {
+	int exit_code = 0;
+
+	while (*line == ' ' || *line == '\t')
+		line++;
+	if (strncmp(line, "exit", 4) == 0)
+	{
+		line += 4;
+		while (*line == ' ' || *line == '\t')
+			line++;
+		if (*line == '\0')
+			exit(0);
+		else
+		{
+			exit_code = atoi(line);
+			exit(exit_code);
+		}
+	}
+	else
+	{
+		exit(0);
+	}
+	
 	free(line);
-	print_str("\n", 1);
-	exit(1);
 }
+
 
 /**
  * built_in - Checks for builtin functions.

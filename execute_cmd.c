@@ -20,7 +20,7 @@ char **tokenize_path(int index, char *str)
 {
 	char *env_var;
 	int token_count;
-	const char *delim = ":\n";
+	const char *delim = ":";
 	char **path_tokens;
 	int len;
 
