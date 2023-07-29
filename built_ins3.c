@@ -1,6 +1,22 @@
 #include "main.h"
 
 /**
+ * myenv_ - prints the current environment
+ *
+ * @info: Structure containing potential arguments. Used to maintain
+ * constant function prototype
+ *
+ * Return: Always 0
+ *
+ */
+int myenv_(Shell *info)
+{
+	printliststr(info->env);
+
+	return (0);
+}
+
+/**
  * getenv_ - gets the value of an environ variable
  *
  * @info: Structure containing potential arguments. Used to maintain
@@ -49,22 +65,6 @@ int mysetenv_(Shell *info)
 }
 
 /**
- * myenv_ - prints the current environment
- *
- * @info: Structure containing potential arguments. Used to maintain
- * constant function prototype
- *
- * Return: Always 0
- *
- */
-int myenv_(Shell *info)
-{
-	printliststr(info->env);
-
-	return (0);
-}
-
-/**
  * myunsetenv_ - Remove an envirinment variable
  *
  * @info: Structure containing potential arguments. Used to maintain
@@ -86,3 +86,4 @@ int myunsetenv_(Shell *info)
 
 	return (0);
 }
+

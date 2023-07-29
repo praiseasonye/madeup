@@ -154,4 +154,3 @@ int printd(int input, int fd)
 
 	return (count);
 }
-

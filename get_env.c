@@ -1,5 +1,16 @@
 #include "main.h"
 
+char **get_environ(Shell  *info)
+{
+	if (!info->environ || info->env_changed)
+	{
+		info->environ = listtostrings(info->env);
+		info->env_changed = 0;
+	}
+
+	return (info->environ);
+}
+
 /**
  * _unsetenv - Remove an environment variable
  *
@@ -34,27 +45,6 @@ int _unsetenv(Shell *info, char *var)
 		i++;
 	}
 	return (info->env_changed);
-}
-
-/**
- * get_environ - returns the string array copy of our environ
- *
- * @info: Structure containing potential arguments. Used to maintain
- * constant function prototype
- *
- * Return: Always 0
- *
- */
-
-char **get_environ(Shell  *info)
-{
-	if (!info->environ || info->env_changed)
-	{
-		info->environ = listtostrings(info->env);
-		info->env_changed = 0;
-	}
-
-	return (info->environ);
 }
 
 /**
@@ -104,3 +94,4 @@ int _setenv(Shell *info, char *var, char *value)
 	info->env_changed = 1;
 	return (0);
 }
+

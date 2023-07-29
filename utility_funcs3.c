@@ -93,3 +93,24 @@ int putchar_(char c)
 {
 	return (write(1, &c, 1));
 }
+
+/**
+ * puts_ - prints an input string
+ *
+ * @str: the string to be printed
+ *
+ * Return: Nothing
+ */
+
+void puts_(char *str)
+{
+	int i = 0;
+
+	if (!str)
+		return;
+	while (str[i] != '\0')
+	{
+		putchar_(str[i]);
+		i++;
+	}
+}

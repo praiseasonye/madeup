@@ -66,7 +66,7 @@ int myhelp(Shell *info)
 	arg_array = info->argv;
 	puts("Contact <praiseikennaasonye@gmail.com> \n");
 	if (0)
-		puts(*arg_array); /*temp att_unused workaround */
+		puts_(*arg_array); /*temp att_unused workaround */
 	return (0);
 }
 

@@ -95,6 +95,32 @@ ssize_t get_input(Shell *info)
 }
 
 /**
+ * readbuf - reads a buffer
+ *
+ * @info: parameter a struct
+ *
+ * @buf: buffer
+ *
+ * @i: size
+ *
+ * Return: r
+ *
+ */
+
+ssize_t readbuf(Shell *info, char *buf, size_t *i)
+{
+	ssize_t r = 0;
+
+	if (*i)
+		return (0);
+	r = read(info->readfd, buf, BUFF_SIZE);
+	if (r >= 0)
+		*i = r;
+	return (r);
+}
+
+
+/**
  * _getline - get the next line of input from STDIN
  *
  * @info: parameter struct
@@ -160,27 +186,3 @@ void sigintHandler(__attribute__((unused))int sig_num)
 	putchar_(BUFF_FLUSH);
 }
 
-/**
- * readbuf - reads a buffer
- *
- * @info: parameter a struct
- *
- * @buf: buffer
- *
- * @i: size
- *
- * Return: r
- *
- */
-
-ssize_t readbuf(Shell *info, char *buf, size_t *i)
-{
-	ssize_t r = 0;
-
-	if (*i)
-		return (0);
-	r = read(info->readfd, buf, BUFF_SIZE);
-	if (r >= 0)
-		*i = r;
-	return (r);
-}

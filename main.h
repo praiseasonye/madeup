@@ -243,7 +243,4 @@ int replacealias(Shell *);
 int replacevars(Shell *);
 int replacestring(char **, char *);
 
-ssize_t readbuf(Shell *info, char *buf, size_t *i);
-int printalias(list_t *node)
-
 #endif
