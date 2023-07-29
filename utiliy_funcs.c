@@ -1,34 +1,49 @@
 #include <stdlib.h>
 
 /**
- * _strcpy - Copies a string pointed to by @src, and also, by
+ * strncpy_ - Copies a string pointed to by @src, and also, by
  * terminating null byte, to a buffer pointed by a @dest.
+ *
  * @dest: A buffer I copy to.
+ *
  * @src: A source string to cpoy.
  *
+ * @n: the amount of characters to copy
+ *
  * Return: A pointer to the destination string @dest.
+ *
  */
 
-char *_strcpy(char *dest, char *src)
+char *strncpy_(char *dest, char *src, int n)
 {
-	int i = 0;
+	int i, j;
+	char *s = dest;
 
-	for (i = 0; src[i] != '\0'; i++)
+	i = 0;
+	while (src[i] != '\0' && i < n - 1)
 	{
 		dest[i] = src[i];
+		i++;
 	}
-	dest[i] = '\0';
-	return (dest);
-
+	if (i < n)
+	{
+		j = i;
+		while (j < n)
+		{
+			dest[j] = '\0';
+			j++;
+		}
+	}
+	return (s);
 }
 
 /**
- * _strlen - returns the length of a string
+ * strlen_ - returns the length of a string
  * @s: string to evaluate
  *
  * Return: the length of the string
  */
-int _strlen(char *s)
+int strlen_(char *s)
 {
 	int j;
 
@@ -45,43 +60,63 @@ int _strlen(char *s)
 
 
 /**
- * _strcat - Concatenates the string pointed to by @src,
+ * strncat_ - Concatenates the string pointed to by @src,
  * null byte, to the end of the string pointed to by @dest.
+ *
  * @dest: A pointer to the string to be concatenated upon.
+ *
  * @src: The source string to be appended to @dest.
  *
+ * @n: the amount of bytes
+ *
  * Return: A pointer to the destination string @dest.
+ *
  */
 
-char *_strcat(char *dest, char *src)
+char *strncat_(char *dest, char *src, int n)
 {
-	int index = 0, dest_len = 0;
+	int i, j;
+	char *s = dest;
 
-	while (dest[index++])
-		dest_len++;
-
-	for (index = 0; src[index]; index++)
-		dest[dest_len++] = src[index];
-
-	return (dest);
-}
-
-/**
- * double_free - Free double pointer variables.
- * @to_be_freed: The address of the elements that need to be freed.
- */
-void double_free(char **to_be_freed)
-{
-	int index;
-
-	for (index = 0; to_be_freed[index] != NULL; index++)
-		free(to_be_freed[index]);
-	free(to_be_freed);
+	i = 0;
+	j = 0;
+	while (dest[i] != '\0')
+		i++;
+	while (src[j] != '\0' && j < n)
+	{
+		dest[i] = src[j];
+		i++;
+		j++;
+	}
+	if (j < n)
+		dest[i] = '\0';
+	return (s);
 }
 
 
 /**
- * _strcmp - Compares pointers to two strings.
+ * *strchr_ - locates a character in a  string
+ *
+ * @s: the string to be parsed
+ *
+ * @c: the character to look for
+ *
+ * Return: (s) a pointer to the memory area s
+ *
+ */
+
+char *strchr_(char *s, char c)
+{
+	do {
+		if (*s == c)
+			return (s);
+	} while (*s++ != '\0');
+
+	return (NULL);
+}
+
+/**
+ * strcmp_ - Compares pointers to two strings.
  * @s1: A pointer to the first string to be compared.
  * @s2: A pointer to the second string to be compared.
  *
@@ -90,7 +125,7 @@ void double_free(char **to_be_freed)
  *         If str1 > str2, result = the positive difference
  */
 
-int _strcmp(char *s1, char *s2)
+int strcmp_(char *s1, char *s2)
 {
 	while (*s1 && *s2 && *s1 == *s2)
 	{

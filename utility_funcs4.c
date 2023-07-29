@@ -69,3 +69,25 @@ int myhelp(Shell *info)
 		puts(*arg_array); /*temp att_unused workaround */
 	return (0);
 }
+
+/**
+ * eputs - prints an input string
+ *
+ * @str: the string to be printed
+ *
+ * Return: Nothing
+ */
+
+void eputs(char *str)
+{
+	int i = 0;
+
+	if (!str)
+		return;
+
+	while (str[i] != '\0')
+	{
+		eputchar(str[i]);
+		i++;
+	}
+}
