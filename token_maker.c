@@ -10,7 +10,7 @@
  * Return: 1 if true, 0 otherwise
  */
 
-int iscmd(ShellInfo  *info, char *path)
+int iscmd(Shell  *info, char *path)
 {
 	struct stat st;
 
@@ -61,14 +61,14 @@ char *dupchars(char *pathstr, int start, int stop)
  * Return: full path of cmd if found or NULL
  */
 
-char *findpath(ShellInfo  *info, char *pathstr, char *cmd)
+char *findpath(Shell *info, char *pathstr, char *cmd)
 {
 	int i = 0, curr_pos = 0;
 	char *path;
 
 	if (!pathstr)
 		return (NULL);
-	if ((strlen_(cmd) > 2) && starts_with(cmd, "./"))
+	if ((strlen_(cmd) > 2) && startswith(cmd, "./"))
 	{
 		if (iscmd(info, cmd))
 			return (cmd);

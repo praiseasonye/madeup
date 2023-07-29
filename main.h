@@ -1,6 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -15,7 +16,7 @@
 /* for read/write buffers */
 #define BUFF_SIZE 1024
 #define BUFF_SIZE 1024
-#define BUF_FLUSH -1
+#define BUFF_FLUSH -1
 
 /* for command chaining */
 #define CMDNORM 0
@@ -140,125 +141,109 @@ typedef struct builtin
 	int (*func)(Shell *);
 } builtin_table;
 
-/* shloop.c */
+
 int hsh(Shell *, char **);
 int findbuiltin(Shell *);
 void findcmd(Shell *);
 void forkcmd(Shell *);
 
-/* parser.c */
 int iscmd(Shell *, char *);
 char *dupchars(char *, int, int);
 char *findpath(Shell *, char *, char *);
 
-/* loophsh.c */
 int loophsh(char **);
 
-/* errors.c */
 void eputs(char *);
 int eputchar(char);
 int putfd(char c, int fd);
 int putsfd(char *str, int fd);
 
-/* string.c */
 int strlen_(char *);
 int strcmp_(char *, char *);
 char *startswith(const char *, const char *);
 char *strcat_(char *, char *);
 
-/* string1.c */
 char *strcpy_(char *, char *);
 char *strdup_(const char *);
 void puts_(char *);
 int putchar_(char);
 
-/* exits.c */
 char *strncpy_(char *, char *, int);
 char *strncat_(char *, char *, int);
 char *strchr_(char *, char);
 
-/* tokenizer.c */
 char **strtow(char *, char *);
 char **strtow2(char *, char);
 
-/*realloc.c */
 char *memset_(char *, char, unsigned int);
 void ffree(char **);
 void *realloc_(void *, unsigned int, unsigned int);
 
-/*memory.c */
 int bfree(void **);
 
-/* atoi.c */
 int interactive(Shell *);
 int isdelim(char, char *);
 int isalpha_(int);
 int atoi_(char *);
 
-/* errors1.c */
 int erratoi_(char *);
 void printerror(Shell *, char *);
 int printd(int, int);
 char *convertnumber(long int, int, int);
 void removecomments(char *);
 
-/* builtin.c */
 int myexit(Shell *);
 int mycd(Shell *);
 int myhelp(Shell *);
 
-/* builtin1.c */
 int myhistory(Shell *);
 int myalias(Shell *);
 
-/* getline.c */
-ssize_t get_input(Shell *);
+
+ssize_t getinput(Shell *);
 int _getline(Shell *, char **, size_t *);
 void sigintHandler(int);
 
-/*getinfo.c */
+
 void clearinfo(Shell *);
 void setinfo(Shell *, char **);
 void freeinfo(Shell *, int);
 
-/* environ.c */
 char *getenv_(Shell *, const char *);
 int myenv_(Shell *);
 int mysetenv_(Shell *);
 int myunsetenv_(Shell *);
 int populateenvlist(Shell *);
 
-/* getenv.c */
-char **get_environ(Shell *);
+char **getenviron(Shell *);
 int unsetenv_(Shell *, char *);
 int setenv_(Shell *, char *, char *);
 
-/* history.c */
 char *gethistoryfile(Shell *info);
 int writehistory(Shell *info);
 int readhistory(Shell *info);
 int buildhistorylist(Shell *info, char *buf, int linecount);
 int renumberhistory(Shell *info);
 
-/* lists.c */
 list_t *addnode(list_t **, const char *, int);
 list_t *addnodeend(list_t **, const char *, int);
 size_t printliststr(const list_t *);
 int deletenodeatindex(list_t **, unsigned int);
 void freelist(list_t **);
 
-/* lists1.c */
 size_t listlen(const list_t *);
 char **listtostrings(list_t *);
 size_t printlist(const list_t *);
 list_t *nodestartswith(list_t *, char *, char);
 ssize_t getnodeindex(list_t *, list_t *);
 
-/* vars.c */
-int ischain(ShellInfo *, char *, size_t *);
+int ischain(Shell *, char *, size_t *);
 void checkchain(Shell *, char *, size_t *, size_t, size_t);
 int replacealias(Shell *);
 int replacevars(Shell *);
 int replacestring(char **, char *);
+
+ssize_t readbuf(Shell *info, char *buf, size_t *i);
+int printalias(list_t *node)
 
 #endif

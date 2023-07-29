@@ -1,3 +1,5 @@
+#include "main.h"
+
 /**
  * input_buf - buffers chained commands
  *
@@ -60,7 +62,7 @@ ssize_t get_input(Shell *info)
 	ssize_t r = 0;
 	char **buf_p = &(info->arg), *p;
 
-	_putchar(BUFF_FLUSH);
+	putchar_(BUFF_FLUSH);
 	r = input_buf(info, &buf, &len);
 	if (r == -1)
 		return (-1);
@@ -69,10 +71,10 @@ ssize_t get_input(Shell *info)
 		j = i;
 		p = buf + i;
 
-		check_chain(info, buf, &j, i, len);
+		checkchain(info, buf, &j, i, len);
 		while (j < len)
 		{
-			if (is_chain(info, buf, &j))
+			if (ischain(info, buf, &j))
 				break;
 			j++;
 		}
@@ -105,7 +107,7 @@ ssize_t get_input(Shell *info)
  */
 int _getline(Shell *info, char **ptr, size_t *length)
 {
-	static char buf[READ_BUF_SIZE];
+	static char buf[BUFF_SIZE];
 	static size_t i, len;
 	size_t k;
 	ssize_t r = 0, s = 0;
@@ -117,7 +119,7 @@ int _getline(Shell *info, char **ptr, size_t *length)
 	if (i == len)
 		i = len = 0;
 
-	r = read_buf(info, buf, &len);
+	r = readbuf(info, buf, &len);
 	if (r == -1 || (r == 0 && len == 0))
 		return (-1);
 
@@ -155,5 +157,30 @@ void sigintHandler(__attribute__((unused))int sig_num)
 {
 	puts("\n");
 	puts("$ ");
-	putchar(BUFF_FLUSH);
+	putchar_(BUFF_FLUSH);
+}
+
+/**
+ * readbuf - reads a buffer
+ *
+ * @info: parameter a struct
+ *
+ * @buf: buffer
+ *
+ * @i: size
+ *
+ * Return: r
+ *
+ */
+
+ssize_t readbuf(Shell *info, char *buf, size_t *i)
+{
+	ssize_t r = 0;
+
+	if (*i)
+		return (0);
+	r = read(info->readfd, buf, BUFF_SIZE);
+	if (r >= 0)
+		*i = r;
+	return (r);
 }

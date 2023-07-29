@@ -29,7 +29,7 @@ void freeinfo(Shell  *info, int all)
 		bfree((void **)info->cmd_buf);
 		if (info->readfd > 2)
 			close(info->readfd);
-		_putchar(BUFF_FLUSH);
+		putchar_(BUFF_FLUSH);
 	}
 }
 
@@ -70,7 +70,7 @@ void setinfo(Shell  *info, char **av)
 }
 
 /**
- * clear_info - Initializes ShellInfo  struct
+ * clearinfo - Initializes ShellInfo  struct
  * @info: Struct address
  */
 void clearinfo(Shell  *info)

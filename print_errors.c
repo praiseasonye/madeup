@@ -12,7 +12,7 @@
  *
  */
 
-void printerror(ShellInfo  *info, char *estr)
+void printerror(Shell  *info, char *estr)
 {
 	eputs(info->fname);
 	eputs(": ");

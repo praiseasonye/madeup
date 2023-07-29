@@ -37,26 +37,6 @@ char *strncpy_(char *dest, char *src, int n)
 	return (s);
 }
 
-/**
- * strlen_ - returns the length of a string
- * @s: string to evaluate
- *
- * Return: the length of the string
- */
-int strlen_(char *s)
-{
-	int j;
-
-	j = 0;
-
-	while (s[j] != '\0')
-	{
-		j++;
-	}
-
-	return (j);
-}
-
 
 
 /**

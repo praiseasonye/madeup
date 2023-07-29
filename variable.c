@@ -1,4 +1,4 @@
-#include "shell.h"
+#include "main.h"
 
 /**
  * ischain - test if current char in buffer is a chain delimeter
@@ -56,7 +56,7 @@ int ischain(Shell *info, char *buf, size_t *p)
  * Return: void
  */
 
-void check_chain(Shell *info, char *buf, size_t *p, size_t i, size_t len)
+void checkchain(Shell *info, char *buf, size_t *p, size_t i, size_t len)
 {
 	size_t j = *p;
 
@@ -110,7 +110,7 @@ int replacealias(Shell  *info)
 }
 
 /**
- * replace_vars - replaces vars in the tokenized string
+ * replacevars - replaces vars in the tokenized string
  * @info: the parameter struct
  *
  * Return: 1 if replaced, 0 otherwise
@@ -144,14 +144,14 @@ int replacevars(Shell  *info)
 				strdup_(strchr_(node->str, '=') + 1));
 			continue;
 		}
-		replacestring(&info->argv[i], _strdup(""));
+		replacestring(&info->argv[i], strdup_(""));
 
 	}
 	return (0);
 }
 
 /**
- * replace_string - replaces string - replaces string
+ * replacestring - replaces string - replaces string
  *
  * @old: address of old string
  *

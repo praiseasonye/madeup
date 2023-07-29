@@ -51,7 +51,7 @@ char *gethistoryfile(Shell  *info)
 	buf[0] = 0;
 	strcpy_(buf, dir);
 	strcat_(buf, "/");
-	strcat_(buf, HIST_FILE);
+	strcat_(buf, HISTFILE);
 	return (buf);
 }
 
@@ -85,7 +85,7 @@ int buildhistorylist(Shell *info, char *buf, int linecount)
  *
  * Return: the new histcount
  */
-int renumberhistory(ShellInfo  *info)
+int renumberhistory(Shell *info)
 {
 	list_t *node = info->history;
 	int i = 0;
@@ -98,7 +98,7 @@ int renumberhistory(ShellInfo  *info)
 	return (info->histcount = i);
 }
 
-int readhistory(ShellInfo  *info)
+int readhistory(Shell  *info)
 {
 	int i, last = 0, linecount = 0;
 	ssize_t fd, rdlen, fsize = 0;
@@ -132,7 +132,7 @@ int readhistory(ShellInfo  *info)
 		buildhistorylist(info, buf + last, linecount++);
 	free(buf);
 	info->histcount = linecount;
-	while (info->histcount-- >= HIST_MAX)
+	while (info->histcount-- >= HISTMAX)
 		deletenodeatindex(&(info->history), 0);
 	renumberhistory(info);
 	return (info->histcount);

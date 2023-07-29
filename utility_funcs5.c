@@ -15,7 +15,7 @@ int eputchar(char c)
 	static int i;
 	static char buf[BUFF_SIZE];
 
-	if (c == BUF_FLUSH || i >= BUFF_SIZE)
+	if (c == BUFF_FLUSH || i >= BUFF_SIZE)
 	{
 		write(2, buf, i);
 		i = 0;
@@ -113,7 +113,7 @@ int erratoi_(char *s)
 }
 
 /**
- * print_d - function prints a decimal (integer) number (base 10)
+ * printd - function prints a decimal (integer) number (base 10)
  *
  * @input: the input
  *
@@ -125,7 +125,7 @@ int erratoi_(char *s)
 
 int printd(int input, int fd)
 {
-	int (*__putchar)(char) = putchar;
+	int (*__putchar)(char) = putchar_;
 	int i, count = 0;
 	unsigned int abs_, current;
 

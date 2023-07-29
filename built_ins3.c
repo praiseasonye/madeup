@@ -1,3 +1,5 @@
+#include "main.h"
+
 /**
  * getenv_ - gets the value of an environ variable
  *
@@ -33,7 +35,7 @@ char *getenv_(Shell *info, const char *name)
  * Return: Always 0
  *
  */
-int mysetenv_(Shell  *info)
+int mysetenv_(Shell *info)
 {
 	if (info->argc != 3)
 	{
@@ -55,7 +57,7 @@ int mysetenv_(Shell  *info)
  * Return: Always 0
  *
  */
-int myenv_(Shell  *info)
+int myenv_(Shell *info)
 {
 	printliststr(info->env);
 
@@ -70,7 +72,7 @@ int myenv_(Shell  *info)
  *
  * Return: Always 0
  */
-int _myunsetenv(Shell  *info)
+int myunsetenv_(Shell *info)
 {
 	int i;
 

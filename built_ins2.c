@@ -11,7 +11,7 @@
  */
 int myhistory(Shell *info)
 {
-	print_list(info->history);
+	printlist(info->history);
 
 	return (0);
 }
@@ -56,7 +56,7 @@ int setalias(Shell *info, char *str)
 {
 	char *p;
 
-	p = _strchr(str, '=');
+	p = strchr_(str, '=');
 	if (!p)
 		return (1);
 	if (!*++p)
@@ -101,3 +101,29 @@ int myalias(Shell *info)
 
 	return (0);
 }
+
+/**
+ * printalias - prints an alias string
+ *
+ * @node: the alias node
+ *
+ * Return: ALways 0 on success, 1 on error
+ */
+
+int printalias(list_t *node)
+{
+	char *p = NULL, *a = NULL;
+
+	if (node)
+	{
+		p = strchr_(node->str, '=');
+		for (a = node->str; a <= p; a++)
+			putchar_(*a);
+		putchar_('\'');
+		puts_(p + 1);
+		puts_("'\n");
+		return (0);
+	}
+	return (1);
+}
+

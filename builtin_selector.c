@@ -10,16 +10,16 @@
  * Return: 0 on success, 1 on error or error code
  */
 
-int hsh(ShellInfo  *info, char **av)
+int hsh(Shell  *info, char **av)
 {
 	ssize_t r = 0;
 	int builtin_ret = 0;
 
 	while (r != -1 && builtin_ret != -2)
 	{
-		clear_info(info);
+		clearinfo(info);
 		if (interactive(info))
-			_puts("#cisfun$ ");
+			puts_("#cisfun$ ");
 		eputchar(BUFF_FLUSH);
 		r = getinput(info);
 		if (r != -1)
@@ -47,7 +47,7 @@ int hsh(ShellInfo  *info, char **av)
 }
 
 /**
- * find_builtin - find a builtin command
+ * findbuiltin - find a builtin command
  * @info: the paramet & return info struct
  *
  * Return: -1 if builtin not found,
@@ -55,16 +55,16 @@ int hsh(ShellInfo  *info, char **av)
  * 1 if builtin found but not successful,
  * -2 if builtin signals exit()
  */
-int find_builtin(ShellInfo  *info)
+int findbuiltin(Shell  *info)
 {
 	int i, built_in_ret = -1;
 	builtin_table builtintbl[] = {
 		{"exit", myexit},
-		{"env", myenv},
+		{"env", myenv_},
 		{"help",myhelp},
 		{"history", myhistory},
-		{"setenv", _mysetenv},
-		{"unsetenv", myunsetenv},
+		{"setenv", mysetenv_},
+		{"unsetenv", myunsetenv_},
 		{"cd", mycd},
 		{"alias", myalias},
 		{NULL, NULL}
@@ -82,14 +82,14 @@ int find_builtin(ShellInfo  *info)
 
 
 /**
- * find_cmd - finds a command in PAT
+ * findcmd - finds a command in PAT
  *
  * @info: the parameter & return info struct
  *
  * Return: void
  */
 
-void find_cmd(ShellInfo  *info)
+void findcmd(Shell  *info)
 {
 	char *path = NULL;
 	int i, k;
@@ -105,35 +105,35 @@ void find_cmd(ShellInfo  *info)
 			k++;
 	if (!k)
 		return;
-	path = find_path(info, getenv_(info, "PATH="), info->argv[0]);
+	path = findpath(info, getenv_(info, "PATH="), info->argv[0]);
 	if (path)
 	{
 		info->path = path;
-		fork_cmd(info);
+		forkcmd(info);
 	}
 	else
 	{
 		if ((interactive(info) || getenv_(info, "PATH=")
-			|| info->argv[0][0] == '/') && i_cmd(info, info->argv[0]))
+			|| info->argv[0][0] == '/') && iscmd(info, info->argv[0]))
 			forkcmd(info);
 		else if (*(info->arg) != '\n')
 		{
 			info->status = 127;
-			print_error(info, "not found\n");
+			printerror(info, "not found\n");
 		}
 	}
 }
 
 
 /**
- * fork_cmd - forks an exec thread to run cmd
+ * forkcmd - forks an exec thread to run cmd
  *
  * @info: the parameter & return info struct
  *
  * Return:
  * void
  */
-void forkcmd(ShellInfo  *info)
+void forkcmd(Shell  *info)
 {
 	pid_t child_pid;
 
@@ -162,7 +162,7 @@ void forkcmd(ShellInfo  *info)
 		{
 			info->status = WEXITSTATUS(info->status);
 			if (info->status == 126)
-				print_error(info, "Permission denied\n");
+				printerror(info, "Permission denied\n");
 		}
 	}
 }
