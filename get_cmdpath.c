@@ -1,131 +1,139 @@
 #include "main.h"
 
-
 /**
- * find_path - Finds the index of an environmental variable.i
+ * writehistory - creates a file, or appends to an existing file
  *
- * @str: Environmental variable that needs to be found.
+ * @info: the parameter struct
  *
- *
- * Return: Upon success returns the index of the environmental variable.
- *
- *
- * otherwise returns -1.
+ * Return: 1 on success, else -1
  */
 
-
-int find_path(char *str)
+int writehistory(Shell  *info)
 {
-	int i;
-	int len;
-	int j;
+	int fd;
+	char *filename = gethistoryfile(info);
+	list_t *node = NULL;
 
-	len = str_len(str);
-	for (i = 0; environ[i] != NULL; i++)
+	if (!filename)
+		return (-1);
+
+	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0644);
+	free(filename);
+	if (fd == -1)
+		return (-1);
+	for (node = info->history; node; node = node->next)
 	{
-		for (j = 0; j < len; j++)
-		{
-			if (environ[i][j] != str[j])
-				break;
-		}
-		if (j == len && environ[i][j] == '=')
-			return (i);
+		putsfd(node->str, fd);
+		putfd('\n', fd);
 	}
-	return (-1);
+	putfd(BUFF_FLUSH, fd);
+	close(fd);
+	return (1);
 }
 
-
 /**
- * search_directories - Looks through directories stored in path_tokens for a
- * specific file. aka commmand.
+ * gethistoryfile - gets the history file
+ * @info: parameter struct
  *
- * @path_tokens: A pointer to an array of strings representing the different
- * paths contained in the PATH environmental varible.
- *
- * @command: Represents a command. For example ls, echo, pwd, /bin/ls etc.
- *
- *
- * Return: Upon success a string with the upper most directory containing
- * the command file. Otherwise returns NULL.
+ * Return: allocated string containing history file
  */
-char *search_directories(char **path_tokens, char *command)
-{
-	int i, s;
-	char *cwd;
-	char *buf;
-	size_t size;
-	struct stat stat_buf;
 
-	buf = NULL;
-	size = 0;
-	cwd = getcwd(buf, size);
-	if (cwd == NULL)
+char *gethistoryfile(Shell  *info)
+{
+	char *buf, *dir;
+
+	dir = getenv_(info, "HIME=");
+	if (!dir)
 		return (NULL);
-	if (command[0] == '/')
-		command = command + 1;
-	for (i = 0; path_tokens[i] != NULL; i++)
-	{
-		s = chdir(path_tokens[i]);
-		if (s == -1)
-		{
-			perror("ERROR!");
-			return (NULL);
-		}
-		s = stat(command, &stat_buf);
-		if (s == 0)
-		{
-			chdir(cwd);
-			free(cwd);
-			return (path_tokens[i]);
-		}
-	}
-	chdir(cwd);
-	free(cwd);
-	return (NULL);
+	buf = malloc(sizeof(char) * (strlen_(dir) + strlen_(HISTFILE) + 2));
+	if (!buf)
+		return (NULL);
+	buf[0] = 0;
+	strcpy_(buf, dir);
+	strcat_(buf, "/");
+	strcat_(buf, HIST_FILE);
+	return (buf);
 }
 
+/**
+ * buildhistorylist - adds entry to a history linked list
+ *
+ * @info: Structure containing potential arguments. Used to maintain
+ *
+ * @buf: buffer
+ *
+ * @linecount: the history linecount, histcount
+ *
+ * Return: Always 0
+ */
+int buildhistorylist(Shell *info, char *buf, int linecount)
+{
+	list_t *node = NULL;
+
+	if (info->history)
+		node = info->history;
+	addnodeend(&node, buf, linecount);
+
+	if (!info->history)
+		info->history = node;
+	return (0);
+}
 
 /**
- * path_finder - Acts as an interface for functions that will be able to
- * find the full path of a program.
+ * renumberhistory - renumbers the history linked list after changes
+ * @info: Structure containing potential arguments. Used to maintain
  *
- *
- * @command: Represents a command. For example ls, echo, pwd, etc.
- *
- * Return: Upon sucess a string with the full path of the program.
- * for example /bin/ls, /bin/echo, etc. Otherwise returns NULL.
- *
+ * Return: the new histcount
  */
-
-
-char *path_finder(char *command)
+int renumberhistory(ShellInfo  *info)
 {
-	char *str = "PATH";
-	char *constructed;
-	char **path_tokens;
-	int index;
-	char *directory;
+	list_t *node = info->history;
+	int i = 0;
 
-	index = find_path(str);
-	path_tokens = tokenize_path(index, str);
-	if (path_tokens == NULL)
-		return (NULL);
-
-	directory = search_directories(path_tokens, command);
-	if (directory == NULL)
+	while (node)
 	{
-		double_free(path_tokens);
-		return (NULL);
+		node->num = i++;
+		node = node->next;
 	}
+	return (info->histcount = i);
+}
 
-	constructed = build_path(directory, command);
-	if (constructed == NULL)
-	{
-		double_free(path_tokens);
-		return (NULL);
-	}
+int readhistory(ShellInfo  *info)
+{
+	int i, last = 0, linecount = 0;
+	ssize_t fd, rdlen, fsize = 0;
+	struct stat st;
+	char *buf = NULL, *filename = gethistoryfile(info);
 
-	double_free(path_tokens);
+	if (!filename)
+		return (0);
 
-	return (constructed);
+	fd = open(filename, O_RDONLY);
+	free(filename);
+	if (fd == -1)
+		return (0);
+	if (!fstat(fd, &st))
+		fsize = st.st_size;
+	if (fsize < 2)
+		return (0);
+	rdlen = read(fd, buf, fsize);
+	buf[fsize] = 0;
+	if (rdlen <= 0)
+		return (free(buf), 0);
+	close(fd);
+	for (i = 0; i < fsize; i++)
+		if (buf[i] == '\n')
+		{
+			buf[i] = 0;
+			buildhistorylist(info, buf + last, linecount++);
+			last = i + 1;
+		}
+	if (last != i)
+		buildhistorylist(info, buf + last, linecount++);
+	free(buf);
+	info->histcount = linecount;
+	while (info->histcount-- >= HIST_MAX)
+		deletenodeatindex(&(info->history), 0);
+	renumberhistory(info);
+	return (info->histcount);
 }

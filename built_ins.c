@@ -64,61 +64,87 @@ void cd_b(char *line)
 
 
 /**
- * exit_b - Exits the shell with the specified exit code.
- * @line: The command line containing the exit code as "exit <code>",
- *        or simply "exit" without any code.
+ * myexit - exits the shell
+ *
+ * @info: Structure containing potential arguments. Used to maintain
+ * constant function prototype.
+ *
+ * Return: exits with a give exit status
+ * (0) if info.argv[0] != "exit"
+ *
  */
-void exit_b(char *line)
+int myexit(ShellInfo *info)
 {
-	int exit_code = 0;
+	int exitcheck;
 
-	while (*line == ' ' || *line == '\t')
-		line++;
-	if (strncmp(line, "exit", 4) == 0)
+	if (info->argv[1]) 
 	{
-		line += 4;
-		while (*line == ' ' || *line == '\t')
-			line++;
-		if (*line == '\0')
+		exitcheck = erratoi_(info->argv[1]);
+		if (exitcheck == -1)
 		{
-			free(line);
-			exit(0);
+			info->status = 2;
+			printerror(info, "Illegal number: ");
+			eputs(info->argv[1]);
+			eputchar('\n');
+			return (1);
 		}
+
+		info->err_num = erratoi_(info->argv[1]);
+		return (-2);
+	}
+
+	info->err_num = -1;
+	return (-2);
+}
+
+/**
+ * mycd - changes the current directory of the process
+ *
+ * @info: Structure containing potential arguments. Used to maintain
+ * constant function protype.
+ *
+ * Return: Always 0
+ */
+int mycd(ShellInfo *info)
+{
+	char *s, *dir, buffer[1024];
+	int chdir_ret;
+
+	s = getcwd(buffer, 1024);
+	if (!s)
+		puts_("TODO: >>getcwd failure emsg here<<\n");
+	if (!info->argv[1])
+	{
+		dir = getenv_(info, "HOME=");
+		if (!dir)
+			chdir_ret = /* TODO: what should this be" */
+				chdir((dir = getenv_(info, "PWD=")) ? dir : "/");
 		else
+			chdir_ret = chdir(dir);
+	}
+	else if (strcmp_(info->argv[1], "-") == 0)
+	{
+		if (!getenv_(info, "OLDPWD="))
 		{
-			exit_code = atoi(line);
-			free(line);
-			exit(exit_code);
+			puts_(s);
+			putchar_('\n');
+			return (1);
 		}
+		puts(getenv_(info, "OLDPWD=")), putchar_('\n');
+		chdir_ret = /* TODO: what should this be? */
+			chdir((dir = getenv_(info, "OLDPWD=")) ? dir : "/");
+	}
+	else
+		chdir_ret = chdir(info->argv[1]);
+	if (chdir_ret == -1)
+	{
+		printerror(info, "can't cd to ");
+		eputs_(info->argv[1]), eputchar('\n');
 	}
 	else
 	{
-		free(line);
-		exit(0);
+		setenv_(info, "OLDPWD", getenv_(info, "PWD="));
+		setenv_(info, "PWD", getcwd(buffer, 1024));
 	}
-	
-}
-
-
-/**
- * built_in - Checks for builtin functions.
- *
- * @command: An array of all the arguments passed to the shell.
- *
- * @line: A string representing the input from the user.
- *
- * Return: If function is found 0. Otherwise -1.
- *
- */
-int built_in(char **command, char *line)
-{
-	void (*build)(char *);
-
-	build = builtin_selector(command[0]);
-	if (build == NULL)
-		return (-1);
-	if (_strcmp("exit", command[0]) == 0)
-		double_free(command);
-	build(line);
 	return (0);
 }

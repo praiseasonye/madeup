@@ -1,162 +1,98 @@
 #include "main.h"
-#include <string.h>
 
 /**
- * token_interface - Meant to interact with other token functions, and make
- * them more accessible to other parts of the program.
+ * iscmd - determines if a file is an executable command
  *
+ * @info: the info struct
  *
- * @line: A string containing the raw user input.
+ * @path: path to the file
  *
- * @delim: A constant string containing the desired delimeter to tokenize line.
- *
- *
- * @token_count: A holder for the amount of tokens in a string.
- *
- * Return: Upon success an array of tokens representing the command. Otherwise
- * returns NULL.
- *
- *
+ * Return: 1 if true, 0 otherwise
  */
-char **token_interface(char *line, const char *delim, int token_count)
+
+int iscmd(ShellInfo  *info, char *path)
 {
-	char **param_array;
+	struct stat st;
 
-	token_count = count_token(line, delim);
-	if (token_count == -1)
-	{
-		free(line);
-		return (NULL);
-	}
-	param_array = tokenize(token_count, line, delim);
-	if (param_array == NULL)
-	{
-		free(line);
-		return (NULL);
-	}
+	(void)info;
+	if (!path || stat(path, &st))
+		return (0);
 
-	return (param_array);
+	if (st.st_mode & S_IFREG)
+	{
+		return (1);
+	}
+	return (0);
 }
 
-
 /**
- * parse_line - Parses the command line looking for commands and argumements.
- * This function it is also in charged of freeing memory that is not longer
- * needed by the program.
+ * dupchars - duplicates characters
  *
- * @line: A pointer to a string. Will always be NULL upon function entry.
+ * @pathstr: the PATH string
  *
- * @size: A holder for numbers of size_t. Will always be initilized to 0.
+ * @start: starting index
  *
- * @command_counter: A counter keeping track of how many commands have been
- * entered into the shell.
+ * @stop: stopping index
  *
- *
- * @av: Name of the program running the shell
+ * Return: pointer to new buffer
  */
 
-void parse_line(char *line, size_t size, int command_counter, char **av)
+char *dupchars(char *pathstr, int start, int stop)
 {
-	int i;
-	ssize_t read_len;
-	int token_count;
-	char **param_array;
-	const char *delim = "\n\t ";
-	int interactive_mode;
+	static char buf[1024];
+	int i = 0, k = 0;
 
-	token_count = 0;
-	interactive_mode = isatty(STDIN_FILENO);
-	if (interactive_mode)
+	for (k = 0, i = start; i < stop; i++)
+		if (pathstr[i] != ':')
+			buf[k++] = pathstr[i];
+	buf[k] = 0;
+	return (buf);
+}
+
+/**
+ * findpath - finds this cmd in the PATH string
+ *
+ * @info: the info struct
+ *
+ * @pathstr: the PATH string
+ *
+ * @cmd: the cmd to find
+ *
+ * Return: full path of cmd if found or NULL
+ */
+
+char *findpath(ShellInfo  *info, char *pathstr, char *cmd)
+{
+	int i = 0, curr_pos = 0;
+	char *path;
+
+	if (!pathstr)
+		return (NULL);
+	if ((strlen_(cmd) > 2) && starts_with(cmd, "./"))
 	{
-		write(STDOUT_FILENO, PROMPT, str_len(PROMPT));
+		if (iscmd(info, cmd))
+			return (cmd);
 	}
-	read_len = getline(&line, &size, stdin);
-	if (read_len != -1)
+	while (1)
 	{
-		param_array = token_interface(line, delim, token_count);
-		if (param_array[0] == NULL)
+		if (!pathstr[i] || pathstr[i] == ':')
 		{
-			single_free(2, param_array, line);
-			return;
+			path = dupchars(pathstr, curr_pos, i);
+			if (!*path)
+				strcat_(path, cmd);
+			else
+			{
+				strcat_(path, "/");
+				strcat_(path, cmd);
+			}
+			if (iscmd(info, path))
+				return (path);
+
+			if (!pathstr[i])
+				break;
+			curr_pos = i;
 		}
-		i = built_in(param_array, line);
-		if (i == -1)
-			create_child(param_array, line, command_counter, av);
-		for (i = 0; param_array[i] != NULL; i++)
-			free(param_array[i]);
-		single_free(2, param_array, line);
+		i++;
 	}
-	else
-		exit_b(line);
-}
-
-/**
- * tokenize - Separates a string into an array of tokens. DON'T FORGET TO FREE
- * on receiving function when using tokenize.
- *
- *
- * @token_count: An integer representing the amount of tokens in the array.
- *
- *
- * @line: String that is separated by an specified delimeter
- *
- * @delim: The desired delimeter to separate tokens.
- *
- * Return: Upon success a NULL terminated array of pointer to strings.
- * Otherwise returns NULL.
- *
- *
- */
-char **tokenize(int token_count, char *line, const char *delim)
-{
-	int i;
-	char **buffer;
-	char *token;
-	char *line_cp;
-
-	line_cp = _strdup(line);
-	buffer = malloc(sizeof(char *) * (token_count + 1));
-	if (buffer == NULL)
-		return (NULL);
-	token = strtok(line_cp, delim);
-	for (i = 0; token != NULL; i++)
-	{
-		buffer[i] = _strdup(token);
-		token = strtok(NULL, delim);
-	}
-	buffer[i] = NULL;
-	free(line_cp);
-	return (buffer);
-}
-
-
-
-/**
- * count_token - Counts tokens in the passed string.
- *
- *
- * @line: String that is separated by an specified delimeter
- *
- *
- * @delim: The desired delimeter to separate tokens.
- *
- *
- * Return: Upon success the total count of the tokens. Otherwise -1.
- *
- *
- */
-int count_token(char *line, const char *delim)
-{
-	char *str;
-	char *token;
-	int i;
-
-	str = _strdup(line);
-	if (str == NULL)
-		return (-1);
-	token = strtok(str, delim);
-	for (i = 0; token != NULL; i++)
-		token = strtok(NULL, delim);
-	free(str);
-	return (i);
+	return (NULL);
 }
