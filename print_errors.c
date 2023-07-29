@@ -24,7 +24,7 @@ void printerror(Shell  *info, char *estr)
 }
 
 /**
- * convert_number - converter function, a clone of itoa
+ * convertnumber - converter function, a clone of itoa
  *
  * @num: number
  *
@@ -35,7 +35,7 @@ void printerror(Shell  *info, char *estr)
  * Return: string
  */
 
-char *convert_number(long int num, int base, int flags)
+char *convertnumber(long int num, int base, int flags)
 {
 	static char *array;
 	static char buffer[50];
@@ -71,7 +71,7 @@ char *convert_number(long int num, int base, int flags)
  *
  */
 
-void remove_comments(char *buf)
+void removecomments(char *buf)
 {
 	int i;
 

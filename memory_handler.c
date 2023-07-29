@@ -72,7 +72,7 @@ void ffree(char **pp)
  * Return: pointer to da ol'block nemeen.
  */
 
-void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
+void *realloc_(void *ptr, unsigned int old_size, unsigned int new_size)
 {
 	char *p;
 

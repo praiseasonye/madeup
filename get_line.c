@@ -47,7 +47,7 @@ ssize_t input_buf(Shell *info, char **buf, size_t *len)
 }
 
 /**
- * get_input - gets a line minus the newline
+ * getinput - gets a line minus the newline
  *
  * @info: parameter struct
  *
@@ -55,7 +55,7 @@ ssize_t input_buf(Shell *info, char **buf, size_t *len)
  *
  */
 
-ssize_t get_input(Shell *info)
+ssize_t getinput(Shell *info)
 {
 	static char *buf;
 	static size_t i, j, len;

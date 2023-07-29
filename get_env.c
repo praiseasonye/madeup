@@ -1,6 +1,6 @@
 #include "main.h"
 
-char **get_environ(Shell  *info)
+char **getenviron(Shell  *info)
 {
 	if (!info->environ || info->env_changed)
 	{
@@ -12,7 +12,7 @@ char **get_environ(Shell  *info)
 }
 
 /**
- * _unsetenv - Remove an environment variable
+ * unsetenv_ - Remove an environment variable
  *
  * @info: Structure containing npotential arguments. used to maintain
  * constant function prototype
@@ -22,7 +22,7 @@ char **get_environ(Shell  *info)
  *
  */
 
-int _unsetenv(Shell *info, char *var)
+int unsetenv_(Shell *info, char *var)
 {
 	list_t *node = info->env;
 	size_t i = 0;
@@ -61,7 +61,7 @@ int _unsetenv(Shell *info, char *var)
  *
  */
 
-int _setenv(Shell *info, char *var, char *value)
+int setenv_(Shell *info, char *var, char *value)
 {
 	char *buf = NULL;
 	list_t *node;
