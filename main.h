@@ -233,5 +233,6 @@ int get_help(data_shell *datash);
 void free_data(data_shell *datash);
 void set_data(data_shell *datash, char **av);
 int cmp_env_name(const char *nenv, const char *name);
+char *rep_var(char *input, data_shell *datash);
 
 #endif

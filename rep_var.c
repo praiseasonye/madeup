@@ -4,9 +4,12 @@
  * rep_var - calls functions to replace string into vars
  *
  * @input: input string
+ * 
  * @datash: data structure
+ * 
  * Return: replaced string
  */
+
 char *rep_var(char *input, data_shell *datash)
 {
 	r_var *head, *indx;
