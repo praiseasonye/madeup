@@ -39,7 +39,7 @@ typedef struct data
 	int counter;
 	char **_environ;
 	char *pid;
-} shell;
+} data_shell;
 
 /**
  * struct sep_list_s - single linked list
@@ -229,5 +229,8 @@ void aux_help_cd(void);
 
 /* get_help.c */
 int get_help(data_shell *datash);
+
+void free_data(data_shell *datash);
+void set_data(data_shell *datash, char **av);
 
 #endif

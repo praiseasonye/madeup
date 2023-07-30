@@ -1,4 +1,4 @@
-#include "main"
+#include "main.h"
 
 /**
  * set_data - Initialize data structure

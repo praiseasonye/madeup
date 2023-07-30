@@ -1,3 +1,5 @@
+#include "main.h"
+
 /**
  * _unsetenv - deletes a environment variable
  *

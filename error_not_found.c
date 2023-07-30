@@ -1,4 +1,4 @@
-include "main.h"
+#include "main.h"
 
 /**
  * error_not_found - generic error message for command not found
